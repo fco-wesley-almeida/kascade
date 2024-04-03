@@ -4,18 +4,32 @@ using WProxy.TCP;
 
 namespace WProxy.Http;
 
+/// <summary>
+/// Handles incoming HTTP calls by processing TCP connections.
+/// </summary>
 public class HttpCallHandler: ITcpConnectionHandler
 {
 	private readonly Uri _uri;
 	private readonly List<Thread> _threads = new();
 
+	/// <summary>
+	/// Initializes a new instance of the HttpCallHandler class with the specified URI.
+	/// </summary>
+	/// <param name="uri">The URI of the target server.</param>
 	public HttpCallHandler(Uri uri)
 	{
 		_uri = uri;
 	}
 
+	/// <summary>
+	/// Gets the TCP protocol associated with HTTP.
+	/// </summary>
 	public TcpProtocol TcpProtocol => TcpProtocol.Http;
 	
+	/// <summary>
+	/// Callback method invoked when a new TCP connection is accepted.
+	/// </summary>
+	/// <param name="asyncResult">The result of the asynchronous operation.</param>
 	public void AcceptCallback(IAsyncResult asyncResult)
 	{
 		var listener = (Socket)asyncResult.AsyncState!;
@@ -46,6 +60,10 @@ public class HttpCallHandler: ITcpConnectionHandler
 		}
 	}
 
+	/// <summary>
+	/// Callback method invoked when sending data to the client is completed.
+	/// </summary>
+	/// <param name="asyncResult">The result of the asynchronous operation.</param>
 	private void SendCallback(IAsyncResult asyncResult)
 	{
 		var handler = (Socket) asyncResult.AsyncState!;
