@@ -1,12 +1,15 @@
-﻿using System.Net;
-using WProxy;
-using WProxy.Http;
+﻿using WProxy.Http;
+using WProxy.Options;
 using WProxy.TCP;
 
+var options = OptionsCommandLine.FromArgs(args);
+
+Console.WriteLine($"Starting wproxy listening in {options.Endpoint} for destination {options.Destination}");
+
 var tcpListener = new TcpConnectionListener(
-	endpoint: new(IPAddress.Any, 8083), 
-	// handler: new HttpCallHandler(new("http://0.0.0.0:8080"))
-	handler: new HttpCallHandler(new("http://135.148.2.37:8883"))
+	endpoint: options.Endpoint, 
+	handler: new HttpCallHandler(options.Destination)
 );
+
 tcpListener.Listen();
 Console.ReadLine();

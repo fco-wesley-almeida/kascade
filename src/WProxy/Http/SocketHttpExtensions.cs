@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using WProxy.Extensions;
 
 namespace WProxy.Http;
@@ -21,7 +22,6 @@ public static class SocketHttpExtensions
 		{
 			var buffer = new byte[socket.Available];
 			int bytesRead = socket.Available > 0 ? socket.Receive(buffer) : 0;
-			Console.WriteLine($"Client bytesRead = {bytesRead}");
 			if (bytesRead > 0 && !transferenceStarted)
 			{
 				transferenceStarted = true;
@@ -51,16 +51,21 @@ public static class SocketHttpExtensions
 		Queue<byte> responseBytes = new(); 
 		
 		// Connect to the target server specified by the URI
+		var now = new DateTime();
 		socket.Connect(uri.Host, uri.Port);
+		Console.WriteLine($"Connecting to destination finished after {(new DateTime() - now).Milliseconds}ms");
 		
 		// Send the HTTP request to the server
+		now = new DateTime();
 		socket.Send(requestBytes);
+		Console.WriteLine($"Request sent after {(new DateTime() - now).Milliseconds}ms");
 		
 		byte lastByte = (byte)'\n';
 		int bodyLength = -1;
 		int headersLength = -1;
 		
 		// Loop until both content length and headers length are determined or until data is received
+		now = new DateTime();
 		while(bodyLength == -1 && headersLength == -1 ? socket.Available > 0 || lastByte == '\n' : responseBytes.Count < headersLength + bodyLength)
 		{
 			// Buffer to hold received bytes. We will allocate (IN STACK) only the memory needed for this transmission (socket.Available). 
@@ -127,6 +132,7 @@ public static class SocketHttpExtensions
 				lastByte = buffer[^1];
 			}
 		}
+		Console.WriteLine($"Response read after {(new DateTime() - now).Milliseconds}ms. Closing connection");
 		socket.Close();
 		return responseBytes.ToArray();
 	}

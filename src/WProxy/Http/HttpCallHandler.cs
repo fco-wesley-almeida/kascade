@@ -69,8 +69,9 @@ public class HttpCallHandler: ITcpConnectionHandler
 		var handler = (Socket) asyncResult.AsyncState!;
 		try
 		{
+			var now = new DateTime();
 			int bytesSent = handler.EndSend(asyncResult);
-			Console.WriteLine($"Sent {bytesSent} bytes to client.");
+			Console.WriteLine($"Sent {bytesSent} bytes to client after {(new DateTime() - now).Milliseconds}ms.");
 			handler.Shutdown(SocketShutdown.Both);
 			handler.Close();
 		}
