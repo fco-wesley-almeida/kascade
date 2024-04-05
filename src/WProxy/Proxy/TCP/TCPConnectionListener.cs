@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace WProxy.TCP;
+namespace WProxy.Proxy.TCP;
 
 /// <summary>
 /// Listens for incoming TCP connections on a specified endpoint and delegates handling to a provided ITcpConnectionHandler.

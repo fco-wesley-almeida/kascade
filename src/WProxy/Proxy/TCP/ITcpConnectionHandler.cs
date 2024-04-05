@@ -1,4 +1,4 @@
-namespace WProxy.TCP;
+namespace WProxy.Proxy.TCP;
 
 public interface ITcpConnectionHandler
 {

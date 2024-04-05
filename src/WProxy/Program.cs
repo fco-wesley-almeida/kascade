@@ -1,6 +1,6 @@
-﻿using WProxy.Http;
-using WProxy.Options;
-using WProxy.TCP;
+﻿using WProxy.Options;
+using WProxy.Proxy.Http;
+using WProxy.Proxy.TCP;
 
 var options = OptionsCommandLine.FromArgs(args);
 

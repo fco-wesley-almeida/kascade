@@ -1,7 +1,4 @@
-using System.Runtime.InteropServices.JavaScript;
-using System.Xml;
-
-namespace WProxy.Extensions;
+namespace WProxy.Options;
 
 public static class StringExtensions
 {

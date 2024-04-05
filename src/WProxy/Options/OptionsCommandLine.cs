@@ -1,5 +1,4 @@
 using System.Net;
-using WProxy.Extensions;
 
 namespace WProxy.Options;
 

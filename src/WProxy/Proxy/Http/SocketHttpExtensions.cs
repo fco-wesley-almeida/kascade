@@ -1,8 +1,7 @@
 using System.Net.Sockets;
-using System.Security.Cryptography;
-using WProxy.Extensions;
+using WProxy.Proxy.Extensions;
 
-namespace WProxy.Http;
+namespace WProxy.Proxy.Http;
 
 /// <summary>
 /// Extension methods for Socket to facilitate HTTP communication.
@@ -73,6 +72,8 @@ public static class SocketHttpExtensions
 			
 			// Read bytes from the server. This conditional prevents exceptions when the socket is unavailable.
 			int serverBytesRead = socket.Available > 0 ? socket.Receive(buffer) : 0;
+			// Console.WriteLine($"ServerBytesRead = {serverBytesRead}");
+			// if (serverBytesRead == 0) continue;
 			
 			// Process each byte in the received buffer.
 			for (var i = 0; i < buffer.Length; i++)
@@ -122,15 +123,12 @@ public static class SocketHttpExtensions
 					if (isEndHeader)
 					{
 						headersLength = i + 1;
+						// Update the last byte read from the server. This is useful when Content-Length is not informed.
+						lastByte = buffer[^1];
 					}
 				}
 			}
-			
-			// Update the last byte read from the server. This is useful when Content-Length is not informed.
-			if (buffer.Length > 0 && serverBytesRead > 0)
-			{
-				lastByte = buffer[^1];
-			}
+			// Console.WriteLine($"Last byte = {lastByte}");
 		}
 		Console.WriteLine($"Response read after {(new DateTime() - now).Milliseconds}ms. Closing connection");
 		socket.Close();

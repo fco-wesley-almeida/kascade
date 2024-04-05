@@ -1,4 +1,4 @@
-namespace WProxy.Extensions;
+namespace WProxy.Proxy.Extensions;
 
 /// <summary>
 /// Provides extension methods for byte data.

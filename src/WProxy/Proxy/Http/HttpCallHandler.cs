@@ -1,8 +1,7 @@
 using System.Net.Sockets;
-using System.Text;
-using WProxy.TCP;
+using WProxy.Proxy.TCP;
 
-namespace WProxy.Http;
+namespace WProxy.Proxy.Http;
 
 /// <summary>
 /// Handles incoming HTTP calls by processing TCP connections.
@@ -38,10 +37,10 @@ public class HttpCallHandler: ITcpConnectionHandler
 		var thread = new Thread(HandleTcpRequest);
 		thread.Start();
 
-		lock (_threads)
-		{
-			_threads.Add(thread);
-		}
+		// lock (_threads)
+		// {
+		// 	_threads.Add(thread);
+		// }
 
 		void HandleTcpRequest()
 		{
