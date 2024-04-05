@@ -1,4 +1,4 @@
-namespace Hermes.Options;
+namespace Kascade.Options;
 
 public static class StringExtensions
 {

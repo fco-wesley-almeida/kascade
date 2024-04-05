@@ -1,4 +1,4 @@
-namespace Hermes.Proxy.Extensions;
+namespace Kascade.Proxy.Extensions;
 
 /// <summary>
 /// Provides extension methods for byte data.

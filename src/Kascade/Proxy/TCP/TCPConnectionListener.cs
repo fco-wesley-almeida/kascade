@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace Hermes.Proxy.TCP;
+namespace Kascade.Proxy.TCP;
 
 /// <summary>
 /// Listens for incoming TCP connections on a specified endpoint and delegates handling to a provided ITcpConnectionHandler.

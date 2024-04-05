@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Hermes.Options;
+namespace Kascade.Options;
 
 public class OptionsCommandLine: IOptions
 {

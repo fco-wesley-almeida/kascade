@@ -1,6 +1,6 @@
-﻿using Hermes.Options;
-using Hermes.Proxy.Http;
-using Hermes.Proxy.TCP;
+﻿using Kascade.Options;
+using Kascade.Proxy.Http;
+using Kascade.Proxy.TCP;
 
 var options = OptionsCommandLine.FromArgs(args);
 

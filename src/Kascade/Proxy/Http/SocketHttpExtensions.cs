@@ -1,7 +1,7 @@
 using System.Net.Sockets;
-using Hermes.Proxy.Extensions;
+using Kascade.Proxy.Extensions;
 
-namespace Hermes.Proxy.Http;
+namespace Kascade.Proxy.Http;
 
 /// <summary>
 /// Extension methods for Socket to facilitate HTTP communication.

@@ -1,4 +1,4 @@
-namespace Hermes.Proxy.TCP;
+namespace Kascade.Proxy.TCP;
 
 public enum TcpProtocol
 {

@@ -1,7 +1,7 @@
 using System.Net.Sockets;
-using Hermes.Proxy.TCP;
+using Kascade.Proxy.TCP;
 
-namespace Hermes.Proxy.Http;
+namespace Kascade.Proxy.Http;
 
 /// <summary>
 /// Handles incoming HTTP calls by processing TCP connections.
