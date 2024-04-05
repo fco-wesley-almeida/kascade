@@ -1,6 +1,6 @@
-# WProxy
+# Hermes
 
-WProxy is a lightweight proxy server implementation in C#/.NET. It provides functionalities for handling TCP connections and HTTP requests.
+Hermes is a lightweight proxy server implementation in C#/.NET. It provides functionalities for handling TCP connections and HTTP requests.
 
 ## Features
 
