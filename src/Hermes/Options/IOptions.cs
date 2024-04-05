@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace WProxy.Options;
+namespace Hermes.Options;
 
 public interface IOptions
 {

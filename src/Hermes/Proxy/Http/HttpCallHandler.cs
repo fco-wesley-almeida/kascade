@@ -1,7 +1,7 @@
 using System.Net.Sockets;
-using WProxy.Proxy.TCP;
+using Hermes.Proxy.TCP;
 
-namespace WProxy.Proxy.Http;
+namespace Hermes.Proxy.Http;
 
 /// <summary>
 /// Handles incoming HTTP calls by processing TCP connections.

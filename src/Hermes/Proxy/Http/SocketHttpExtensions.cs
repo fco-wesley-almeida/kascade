@@ -1,7 +1,7 @@
 using System.Net.Sockets;
-using WProxy.Proxy.Extensions;
+using Hermes.Proxy.Extensions;
 
-namespace WProxy.Proxy.Http;
+namespace Hermes.Proxy.Http;
 
 /// <summary>
 /// Extension methods for Socket to facilitate HTTP communication.

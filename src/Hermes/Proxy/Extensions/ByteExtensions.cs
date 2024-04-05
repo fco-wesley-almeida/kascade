@@ -1,4 +1,4 @@
-namespace WProxy.Proxy.Extensions;
+namespace Hermes.Proxy.Extensions;
 
 /// <summary>
 /// Provides extension methods for byte data.

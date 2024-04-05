@@ -1,6 +1,6 @@
-﻿using WProxy.Options;
-using WProxy.Proxy.Http;
-using WProxy.Proxy.TCP;
+﻿using Hermes.Options;
+using Hermes.Proxy.Http;
+using Hermes.Proxy.TCP;
 
 var options = OptionsCommandLine.FromArgs(args);
 

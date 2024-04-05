@@ -1,4 +1,4 @@
-namespace WProxy.Options;
+namespace Hermes.Options;
 
 public static class StringExtensions
 {

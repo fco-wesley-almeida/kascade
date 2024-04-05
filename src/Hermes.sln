@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WProxy", "WProxy\WProxy.csproj", "{BBCE1D53-7385-4A71-BEA7-682C1DAC8C64}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes", "Hermes\Hermes.csproj", "{BBCE1D53-7385-4A71-BEA7-682C1DAC8C64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

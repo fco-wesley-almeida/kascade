@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace WProxy.Proxy.TCP;
+namespace Hermes.Proxy.TCP;
 
 /// <summary>
 /// Listens for incoming TCP connections on a specified endpoint and delegates handling to a provided ITcpConnectionHandler.

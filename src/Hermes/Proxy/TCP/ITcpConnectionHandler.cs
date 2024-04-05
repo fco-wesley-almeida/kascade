@@ -1,4 +1,4 @@
-namespace WProxy.Proxy.TCP;
+namespace Hermes.Proxy.TCP;
 
 public interface ITcpConnectionHandler
 {
