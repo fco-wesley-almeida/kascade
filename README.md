@@ -19,7 +19,9 @@ WProxy consists of the following main components:
 
 ## Usage
 
-To use WProxy, you should pass as argument the endpoint where the proxy will listen and the destination. 
+To use WProxy, you should pass as argument the endpoint where the proxy will listen and the destination.
+
+OBS: for now, we only have support for HTTP. In the future versions, we'll have support for SSL/TNS. 
 
 Example:
 
