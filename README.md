@@ -1,6 +1,6 @@
-# Hermes
+# Cascade
 
-Hermes is a lightweight proxy server implementation in C#/.NET. It provides functionalities for handling TCP connections and HTTP requests.
+Cascade is a lightweight proxy server implementation in C#/.NET. It provides functionalities for handling TCP connections and HTTP requests.
 
 ## Features
 
@@ -11,19 +11,19 @@ Hermes is a lightweight proxy server implementation in C#/.NET. It provides func
 
 ## Components
 
-Hermes consists of the following main components:
+Cascade consists of the following main components:
 
-- **Hermes.TCP:** Provides classes for TCP connection handling and listener setup.
-- **Hermes.Http:** Contains classes for processing HTTP requests and responses.
-- **Hermes.Extensions:** Contains extension methods used within the project.
+- **Cascade.TCP:** Provides classes for TCP connection handling and listener setup.
+- **Cascade.Http:** Contains classes for processing HTTP requests and responses.
+- **Cascade.Extensions:** Contains extension methods used within the project.
 
 ## Usage
 
-To use Hermes, you should pass as argument the endpoint where the proxy will listen and the destination.
+To use Cascade, you should pass as argument the endpoint where the proxy will listen and the destination.
 
 OBS: for now, we only have support for HTTP. In the future versions, we'll have support for SSL/TNS. 
 
 Example:
 
 ```shellscript
-hermes --endpoint 0.0.0.0:8083 --destination http://193.298.12.4:9090
+cascade --endpoint 0.0.0.0:8083 --destination http://193.298.12.4:9090
