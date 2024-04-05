@@ -19,19 +19,9 @@ WProxy consists of the following main components:
 
 ## Usage
 
-To use WProxy in your project:
-
-1. Include the necessary WProxy namespace(s) in your code.
-2. Create an instance of `TcpConnectionListener` with the desired endpoint and `ITcpConnectionHandler` implementation.
-3. Implement the `ITcpConnectionHandler` interface to handle incoming TCP connections and HTTP requests.
+To use WProxy, you should pass as argument the endpoint where the proxy will listen and the destination. 
 
 Example:
 
-```csharp
-// Set up listener
-var endpoint = new IPEndPoint(IPAddress.Any, 8080);
-var handler = new HttpCallHandler(new Uri("http://example.com"));
-var listener = new TcpConnectionListener(endpoint, handler);
-
-// Start listening
-listener.Listen();
+```shellscript
+wproxy --endpoint 0.0.0.0:8083 --destination http://193.298.12.4:9090
