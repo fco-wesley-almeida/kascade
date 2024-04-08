@@ -1,7 +1,8 @@
 using System.Net.Sockets;
-using Kascade.Proxy.TCP;
+using Kascade.Core.Logging;
+using Kascade.Core.TCP;
 
-namespace Kascade.Proxy.Http;
+namespace Kascade.Features.Proxy.Http;
 
 /// <summary>
 /// Handles incoming HTTP calls by processing TCP connections.
@@ -9,15 +10,17 @@ namespace Kascade.Proxy.Http;
 public class HttpCallHandler: ITcpConnectionHandler
 {
 	private readonly Uri _uri;
-	private readonly List<Thread> _threads = new();
+	private readonly ILogger _logger;
 
 	/// <summary>
 	/// Initializes a new instance of the HttpCallHandler class with the specified URI.
 	/// </summary>
 	/// <param name="uri">The URI of the target server.</param>
-	public HttpCallHandler(Uri uri)
+	/// <param name="logger"></param>
+	public HttpCallHandler(Uri uri, ILogger logger)
 	{
 		_uri = uri;
+		_logger = logger;
 	}
 
 	/// <summary>
@@ -45,14 +48,14 @@ public class HttpCallHandler: ITcpConnectionHandler
 		void HandleTcpRequest()
 		{
 			var client = listener.EndAccept(asyncResult);
-			Console.WriteLine($"\nClient connected: {client.RemoteEndPoint!}");
+			_logger.LogInfo($"\nClient connected: {client.RemoteEndPoint!}");
 			
 			// Get HTTP request headers
 			byte[] httpRequestHeaders = client.HttpRequestHeaders();
 			
 			// Send HTTP request
 			Socket destSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			byte[] destResponse = destSocket.SendHttpRequest(httpRequestHeaders, _uri);
+			byte[] destResponse = destSocket.SendHttpRequest(httpRequestHeaders, _uri, _logger);
 			
 			// Send response to client
 			client.BeginSend(destResponse, 0, destResponse.Length, 0, SendCallback, client);
@@ -70,17 +73,17 @@ public class HttpCallHandler: ITcpConnectionHandler
 		{
 			var now = new DateTime();
 			int bytesSent = handler.EndSend(asyncResult);
-			Console.WriteLine($"Sent {bytesSent} bytes to client after {(new DateTime() - now).Milliseconds}ms.");
+			_logger.LogInfo($"Sent {bytesSent} bytes to client after {(new DateTime() - now).Milliseconds}ms.");
 			handler.Shutdown(SocketShutdown.Both);
 			handler.Close();
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine(e.Message);
+			_logger.LogError(e.Message);
 		}
 		finally
 		{
-			Console.WriteLine($"Connection closed.");
+			_logger.LogInfo($"Connection closed.");
 		}
 	}
 }

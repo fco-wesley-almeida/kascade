@@ -1,4 +1,4 @@
-namespace Kascade.Options;
+namespace Kascade.Core.Options;
 
 public static class StringExtensions
 {

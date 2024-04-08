@@ -1,4 +1,4 @@
-namespace Kascade.Proxy.Extensions;
+namespace Kascade.Core.Extensions;
 
 /// <summary>
 /// Provides extension methods for byte data.

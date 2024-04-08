@@ -1,7 +1,8 @@
 using System.Net;
 using System.Net.Sockets;
+using Kascade.Core.Logging;
 
-namespace Kascade.Proxy.TCP;
+namespace Kascade.Core.TCP;
 
 /// <summary>
 /// Listens for incoming TCP connections on a specified endpoint and delegates handling to a provided ITcpConnectionHandler.
@@ -10,6 +11,7 @@ public class TcpConnectionListener
 {
 	private readonly IPEndPoint _endpoint;
 	private readonly ITcpConnectionHandler _handler;
+	private readonly ILogger _logger;
 	private const int Backlog = 10;
 
 	/// <summary>
@@ -17,9 +19,11 @@ public class TcpConnectionListener
 	/// </summary>
 	/// <param name="endpoint">The endpoint to listen on for incoming connections.</param>
 	/// <param name="handler">The handler responsible for processing incoming connections.</param>
-	public TcpConnectionListener(IPEndPoint endpoint, ITcpConnectionHandler handler)
+	/// <param name="logger"></param>
+	public TcpConnectionListener(IPEndPoint endpoint, ITcpConnectionHandler handler, ILogger logger)
 	{
 		_handler = handler;
+		_logger = logger;
 		_endpoint = endpoint;
 	}
 

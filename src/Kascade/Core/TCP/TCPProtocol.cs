@@ -1,4 +1,4 @@
-namespace Kascade.Proxy.TCP;
+namespace Kascade.Core.TCP;
 
 public enum TcpProtocol
 {

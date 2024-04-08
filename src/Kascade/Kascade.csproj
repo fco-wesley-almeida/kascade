@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Proxy\" />
+      <Folder Include="Features\" />
     </ItemGroup>
 
 </Project>

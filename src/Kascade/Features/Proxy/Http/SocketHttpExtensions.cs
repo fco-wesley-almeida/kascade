@@ -1,7 +1,8 @@
 using System.Net.Sockets;
-using Kascade.Proxy.Extensions;
+using Kascade.Core.Extensions;
+using Kascade.Core.Logging;
 
-namespace Kascade.Proxy.Http;
+namespace Kascade.Features.Proxy.Http;
 
 /// <summary>
 /// Extension methods for Socket to facilitate HTTP communication.
@@ -36,28 +37,34 @@ public static class SocketHttpExtensions
 		}
 		return requestBytes.ToArray();
 	}
-	
+
 	/// <summary>
 	/// Sends an HTTP request to a specified URI using the provided socket.
 	/// </summary>
 	/// <param name="socket">The socket used for communication.</param>
 	/// <param name="requestBytes">Byte array containing the HTTP request.</param>
 	/// <param name="uri">The URI of the target server.</param>
+	/// <param name="logger"></param>
 	/// <returns>Byte array containing the HTTP response.</returns>
-	public static byte[] SendHttpRequest(this Socket socket, byte[] requestBytes, Uri uri)
+	public static byte[] SendHttpRequest(this Socket socket, byte[] requestBytes, Uri uri, ILogger logger)
 	{
 		// Queue to store received bytes constituting the HTTP response. We decided to use queue because insertions are O(1).
 		Queue<byte> responseBytes = new(); 
 		
 		// Connect to the target server specified by the URI
 		var now = new DateTime();
-		socket.Connect(uri.Host, uri.Port);
-		Console.WriteLine($"Connecting to destination finished after {(new DateTime() - now).Milliseconds}ms");
+		if (!socket.TryConnect(uri, out var error))
+		{
+			logger.LogError(error!.Summary());
+			return Array.Empty<byte>(); // Returns Empty reply from server
+		}
+		
+		logger.LogInfo($"Connecting to destination finished after {(new DateTime() - now).Milliseconds}ms");
 		
 		// Send the HTTP request to the server
 		now = new DateTime();
 		socket.Send(requestBytes);
-		Console.WriteLine($"Request sent after {(new DateTime() - now).Milliseconds}ms");
+		logger.LogInfo($"Request sent after {(new DateTime() - now).Milliseconds}ms");
 		
 		byte lastByte = (byte)'\n';
 		int bodyLength = -1;
@@ -72,7 +79,7 @@ public static class SocketHttpExtensions
 			
 			// Read bytes from the server. This conditional prevents exceptions when the socket is unavailable.
 			int serverBytesRead = socket.Available > 0 ? socket.Receive(buffer) : 0;
-			// Console.WriteLine($"ServerBytesRead = {serverBytesRead}");
+			// logger.LogInfo($"ServerBytesRead = {serverBytesRead}");
 			// if (serverBytesRead == 0) continue;
 			
 			// Process each byte in the received buffer.
@@ -128,9 +135,9 @@ public static class SocketHttpExtensions
 					}
 				}
 			}
-			// Console.WriteLine($"Last byte = {lastByte}");
+			// logger.LogInfo($"Last byte = {lastByte}");
 		}
-		Console.WriteLine($"Response read after {(new DateTime() - now).Milliseconds}ms. Closing connection");
+		logger.LogInfo($"Response read after {(new DateTime() - now).Milliseconds}ms. Closing connection");
 		socket.Close();
 		return responseBytes.ToArray();
 	}

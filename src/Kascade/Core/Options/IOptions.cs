@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Kascade.Options;
+namespace Kascade.Core.Options;
 
 public interface IOptions
 {
