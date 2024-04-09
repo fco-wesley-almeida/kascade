@@ -3,11 +3,10 @@ using Kascade.Core.Options;
 
 namespace Kascade.Core.Logging;
 
-public class LoggerFile: ILogger
+public class ConsoleLogChannel: ILogChannel
 {
-
 	private readonly IOptions _options;
-	public LoggerFile(IOptions options)
+	public ConsoleLogChannel(IOptions options)
 	{
 		_options = options;
 	}
@@ -22,11 +21,11 @@ public class LoggerFile: ILogger
 		Console.WriteLine($" {DateTime.Now:s} ERROR: {content}");
 	}
 
-	public bool IsEnabled() => true;
+	public bool IsEnabled() => _options.LogChannel == LogChannel.Console;
 
-	public ILogger Configure()
+	public ILogChannel Configure()
 	{
-		Console.WriteLine($"Configuring {nameof(LoggerFile)}...");
+		Console.WriteLine($"Configuring {nameof(ConsoleLogChannel)}...");
 		return this;
 	}
 }

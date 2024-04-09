@@ -1,9 +1,12 @@
+using System.ComponentModel;
+using Kascade.Core.Options;
+
 namespace Kascade.Core.Logging;
 
-public interface ILogger
+public interface ILogChannel
 {
 	public void LogInfo(string content);
 	public void LogError(string content);
 	public bool IsEnabled();
-	public ILogger Configure();
+	public ILogChannel Configure();
 }

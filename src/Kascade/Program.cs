@@ -1,4 +1,5 @@
-﻿using Kascade.Core.Logging;
+﻿using System.Reflection;
+using Kascade.Core.Logging;
 using Kascade.Core.Options;
 using Kascade.Core.TCP;
 using Kascade.Features.Proxy.Http;
@@ -7,12 +8,27 @@ using Kascade.Features.Proxy.Http;
 var options = OptionsCommandLine.FromArgs(args);
 
 // Configure logger
-var logger = new List<ILogger>
-{
-	new LoggerFile(options)
-}
-.Select(logger => logger.Configure())
-.SingleOrDefault(logger => logger.IsEnabled());
+var loggerInstances = Assembly
+	.GetExecutingAssembly()
+	.GetTypes()
+	.Where(type => typeof(ILogChannel).IsAssignableFrom(type) && !type.IsInterface)
+	.Select(type =>
+	{
+		// Find the appropriate constructor
+		var constructor = type.GetConstructor(new[] { typeof(IOptions) });
+		if (constructor != null)
+		{
+			// Invoke the constructor with the options parameter
+			return (ILogChannel)constructor.Invoke(new object[] { options });
+		}
+		// Handle if constructor not found (throw exception or return null)
+		throw new InvalidOperationException($"Constructor with LogChannelOptions parameter not found in type {type.FullName}");
+	});
+
+var logger = loggerInstances
+	.Where(logger => logger.IsEnabled())
+	.Select(logger => logger.Configure())
+	.SingleOrDefault(logger => logger.IsEnabled());
 
 if (logger is null)
 {
@@ -27,7 +43,7 @@ try
 	var tcpListener = new TcpConnectionListener(
 		endpoint: options.Endpoint,
 		handler: new HttpCallHandler(options.Destination, logger),
-		logger: logger
+		logChannel: logger
 	);
 	tcpListener.Listen();
 	

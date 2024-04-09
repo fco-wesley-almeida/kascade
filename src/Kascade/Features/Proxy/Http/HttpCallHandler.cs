@@ -10,17 +10,17 @@ namespace Kascade.Features.Proxy.Http;
 public class HttpCallHandler: ITcpConnectionHandler
 {
 	private readonly Uri _uri;
-	private readonly ILogger _logger;
+	private readonly ILogChannel _logChannel;
 
 	/// <summary>
 	/// Initializes a new instance of the HttpCallHandler class with the specified URI.
 	/// </summary>
 	/// <param name="uri">The URI of the target server.</param>
-	/// <param name="logger"></param>
-	public HttpCallHandler(Uri uri, ILogger logger)
+	/// <param name="logChannel"></param>
+	public HttpCallHandler(Uri uri, ILogChannel logChannel)
 	{
 		_uri = uri;
-		_logger = logger;
+		_logChannel = logChannel;
 	}
 
 	/// <summary>
@@ -48,14 +48,14 @@ public class HttpCallHandler: ITcpConnectionHandler
 		void HandleTcpRequest()
 		{
 			var client = listener.EndAccept(asyncResult);
-			_logger.LogInfo($"\nClient connected: {client.RemoteEndPoint!}");
+			_logChannel.LogInfo($"\nClient connected: {client.RemoteEndPoint!}");
 			
 			// Get HTTP request headers
 			byte[] httpRequestHeaders = client.HttpRequestHeaders();
 			
 			// Send HTTP request
 			Socket destSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			byte[] destResponse = destSocket.SendHttpRequest(httpRequestHeaders, _uri, _logger);
+			byte[] destResponse = destSocket.SendHttpRequest(httpRequestHeaders, _uri, _logChannel);
 			
 			// Send response to client
 			client.BeginSend(destResponse, 0, destResponse.Length, 0, SendCallback, client);
@@ -73,17 +73,17 @@ public class HttpCallHandler: ITcpConnectionHandler
 		{
 			var now = new DateTime();
 			int bytesSent = handler.EndSend(asyncResult);
-			_logger.LogInfo($"Sent {bytesSent} bytes to client after {(new DateTime() - now).Milliseconds}ms.");
+			_logChannel.LogInfo($"Sent {bytesSent} bytes to client after {(new DateTime() - now).Milliseconds}ms.");
 			handler.Shutdown(SocketShutdown.Both);
 			handler.Close();
 		}
 		catch (Exception e)
 		{
-			_logger.LogError(e.Message);
+			_logChannel.LogError(e.Message);
 		}
 		finally
 		{
-			_logger.LogInfo($"Connection closed.");
+			_logChannel.LogInfo($"Connection closed.");
 		}
 	}
 }

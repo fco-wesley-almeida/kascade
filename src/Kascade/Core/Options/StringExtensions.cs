@@ -5,13 +5,14 @@ public static class StringExtensions
 	public static Dictionary<string, string> AsDictionary(this string[] args)
 	{
 		var dictionary = new Dictionary<string, string>();
-		for (var i = 0; i < args.Length; i++)
+		foreach (var arg in args.Where(arg => arg.Contains("--")))
 		{
-			if (args[i].Contains("--") && i < args.Length - 1 && !args[i + 1].Contains("--"))
+			var argSplited = arg.Split("=");
+			if (argSplited.Length >= 2)
 			{
 				dictionary.Add(
-					key: args[i].Replace("--", ""), 
-					value: args[i + 1]
+					key: argSplited[0].Replace("--", ""),
+					value: argSplited[1]
 				);
 			}
 		}

@@ -44,9 +44,9 @@ public static class SocketHttpExtensions
 	/// <param name="socket">The socket used for communication.</param>
 	/// <param name="requestBytes">Byte array containing the HTTP request.</param>
 	/// <param name="uri">The URI of the target server.</param>
-	/// <param name="logger"></param>
+	/// <param name="logChannel"></param>
 	/// <returns>Byte array containing the HTTP response.</returns>
-	public static byte[] SendHttpRequest(this Socket socket, byte[] requestBytes, Uri uri, ILogger logger)
+	public static byte[] SendHttpRequest(this Socket socket, byte[] requestBytes, Uri uri, ILogChannel logChannel)
 	{
 		// Queue to store received bytes constituting the HTTP response. We decided to use queue because insertions are O(1).
 		Queue<byte> responseBytes = new(); 
@@ -55,16 +55,16 @@ public static class SocketHttpExtensions
 		var now = new DateTime();
 		if (!socket.TryConnect(uri, out var error))
 		{
-			logger.LogError(error!.Summary());
+			logChannel.LogError(error!.Summary());
 			return Array.Empty<byte>(); // Returns Empty reply from server
 		}
 		
-		logger.LogInfo($"Connecting to destination finished after {(new DateTime() - now).Milliseconds}ms");
+		logChannel.LogInfo($"Connecting to destination finished after {(new DateTime() - now).Milliseconds}ms");
 		
 		// Send the HTTP request to the server
 		now = new DateTime();
 		socket.Send(requestBytes);
-		logger.LogInfo($"Request sent after {(new DateTime() - now).Milliseconds}ms");
+		logChannel.LogInfo($"Request sent after {(new DateTime() - now).Milliseconds}ms");
 		
 		byte lastByte = (byte)'\n';
 		int bodyLength = -1;
@@ -137,7 +137,7 @@ public static class SocketHttpExtensions
 			}
 			// logger.LogInfo($"Last byte = {lastByte}");
 		}
-		logger.LogInfo($"Response read after {(new DateTime() - now).Milliseconds}ms. Closing connection");
+		logChannel.LogInfo($"Response read after {(new DateTime() - now).Milliseconds}ms. Closing connection");
 		socket.Close();
 		return responseBytes.ToArray();
 	}

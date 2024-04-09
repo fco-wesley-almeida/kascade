@@ -11,7 +11,7 @@ public class TcpConnectionListener
 {
 	private readonly IPEndPoint _endpoint;
 	private readonly ITcpConnectionHandler _handler;
-	private readonly ILogger _logger;
+	private readonly ILogChannel _logChannel;
 	private const int Backlog = 10;
 
 	/// <summary>
@@ -19,11 +19,11 @@ public class TcpConnectionListener
 	/// </summary>
 	/// <param name="endpoint">The endpoint to listen on for incoming connections.</param>
 	/// <param name="handler">The handler responsible for processing incoming connections.</param>
-	/// <param name="logger"></param>
-	public TcpConnectionListener(IPEndPoint endpoint, ITcpConnectionHandler handler, ILogger logger)
+	/// <param name="logChannel"></param>
+	public TcpConnectionListener(IPEndPoint endpoint, ITcpConnectionHandler handler, ILogChannel logChannel)
 	{
 		_handler = handler;
-		_logger = logger;
+		_logChannel = logChannel;
 		_endpoint = endpoint;
 	}
 

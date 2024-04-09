@@ -26,4 +26,4 @@ OBS: for now, we only have support for HTTP. In the future versions, we'll have 
 Example:
 
 ```shellscript
-kaskade --endpoint 0.0.0.0:8083 --destination http://193.298.12.4:9090
+kaskade --endpoint=0.0.0.0:8083 --destination=http://193.298.12.4:9090 --log-channel=console
