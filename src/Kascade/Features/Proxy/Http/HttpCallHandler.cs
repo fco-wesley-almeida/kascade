@@ -12,8 +12,8 @@ public class HttpCallHandler: ITcpConnectionHandler
 	private readonly Uri _uri;
 	private readonly ILogChannel _logChannel;
 	
-	private readonly Queue<IAsyncResult> _messagesQueue = new();
-	private Thread? _queueHandlerThread;
+	private readonly Queue<IAsyncResult> _requestsQueue = new();
+	private Thread? _requestHandlerMainThread;
 
 	/// <summary>
 	/// Initializes a new instance of the HttpCallHandler class with the specified URI.
@@ -37,15 +37,15 @@ public class HttpCallHandler: ITcpConnectionHandler
 	/// <param name="asyncResult">The result of the asynchronous operation.</param>
 	public void AcceptCallback(IAsyncResult asyncResult)
 	{
-		if (_queueHandlerThread is null)
+		if (_requestHandlerMainThread is null)
 		{
-			_queueHandlerThread = new(HandleQueueMessages);
-			_queueHandlerThread.Start();
+			_requestHandlerMainThread = new(HandleQueueMessages);
+			_requestHandlerMainThread.Start();
 		}
 
-		lock (_messagesQueue)
+		lock (_requestsQueue)
 		{
-			_messagesQueue.Enqueue(asyncResult);
+			_requestsQueue.Enqueue(asyncResult);
 		}
 	}
 
@@ -57,9 +57,9 @@ public class HttpCallHandler: ITcpConnectionHandler
 			IAsyncResult? request;
 			bool hasPendingRequests;
 			
-			lock (_messagesQueue)
+			lock (_requestsQueue)
 			{
-				hasPendingRequests = _messagesQueue.TryDequeue(out request);	
+				hasPendingRequests = _requestsQueue.TryDequeue(out request);	
 			}
 			
 			if (hasPendingRequests)
