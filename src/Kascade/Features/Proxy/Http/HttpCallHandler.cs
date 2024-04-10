@@ -11,6 +11,9 @@ public class HttpCallHandler: ITcpConnectionHandler
 {
 	private readonly Uri _uri;
 	private readonly ILogChannel _logChannel;
+	
+	private readonly Queue<IAsyncResult> _messagesQueue = new();
+	private Thread? _queueHandlerThread = null!;
 
 	/// <summary>
 	/// Initializes a new instance of the HttpCallHandler class with the specified URI.
@@ -34,31 +37,49 @@ public class HttpCallHandler: ITcpConnectionHandler
 	/// <param name="asyncResult">The result of the asynchronous operation.</param>
 	public void AcceptCallback(IAsyncResult asyncResult)
 	{
-		var listener = (Socket)asyncResult.AsyncState!;
-		listener.BeginAccept(AcceptCallback, listener);
-		
-		var thread = new Thread(HandleTcpRequest);
-		thread.Start();
-
-		// lock (_threads)
-		// {
-		// 	_threads.Add(thread);
-		// }
-
-		void HandleTcpRequest()
+		if (_queueHandlerThread is null)
 		{
-			var client = listener.EndAccept(asyncResult);
-			_logChannel.LogInfo($"\nClient connected: {client.RemoteEndPoint!}");
+			_queueHandlerThread = new(HandleQueueMessages);
+			_queueHandlerThread.Start();
+		}
+
+		lock (_messagesQueue)
+		{
+			_messagesQueue.Enqueue(asyncResult);
+		}
+	}
+
+	private void HandleQueueMessages()
+	{
+		int request = 0;
+		while (true)
+		{
+			IAsyncResult? asyncResult;
+			bool dequeueWorked;
 			
-			// Get HTTP request headers
-			byte[] httpRequestHeaders = client.HttpRequestHeaders();
+			lock (_messagesQueue)
+			{
+				dequeueWorked = _messagesQueue.TryDequeue(out asyncResult);	
+			}
 			
-			// Send HTTP request
-			Socket destSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			byte[] destResponse = destSocket.SendHttpRequest(httpRequestHeaders, _uri, _logChannel);
-			
-			// Send response to client
-			client.BeginSend(destResponse, 0, destResponse.Length, 0, SendCallback, client);
+			if (dequeueWorked)
+			{
+				_logChannel.LogInfo($"\n\n[HttpCallHandler] {++request} Dequeue worked!");
+				var listener = (Socket?) asyncResult!.AsyncState!;
+				listener.BeginAccept(AcceptCallback, listener);
+				var client = listener.EndAccept(asyncResult);
+				_logChannel.LogInfo($"Client connected: {client.RemoteEndPoint!}");
+				
+				// Get HTTP request headers
+				byte[] httpRequestHeaders = client.HttpRequestHeaders();
+				
+				// Send HTTP request
+				var destSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				byte[] destResponse = destSocket.SendHttpRequest(httpRequestHeaders, _uri, _logChannel);
+				
+				// Send response to client
+				client.BeginSend(destResponse, 0, destResponse.Length, 0, SendCallback, client);
+			}
 		}
 	}
 
@@ -73,7 +94,7 @@ public class HttpCallHandler: ITcpConnectionHandler
 		{
 			var now = new DateTime();
 			int bytesSent = handler.EndSend(asyncResult);
-			_logChannel.LogInfo($"Sent {bytesSent} bytes to client after {(new DateTime() - now).Milliseconds}ms.");
+			// _logChannel.LogInfo($"Sent {bytesSent} bytes to client after {(new DateTime() - now).Milliseconds}ms.");
 			handler.Shutdown(SocketShutdown.Both);
 			handler.Close();
 		}

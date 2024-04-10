@@ -12,7 +12,7 @@ public class TcpConnectionListener
 	private readonly IPEndPoint _endpoint;
 	private readonly ITcpConnectionHandler _handler;
 	private readonly ILogChannel _logChannel;
-	private const int Backlog = 10;
+	private const int Backlog = 1000;
 
 	/// <summary>
 	/// Initializes a new instance of the TcpConnectionListener class with the specified endpoint and connection handler.

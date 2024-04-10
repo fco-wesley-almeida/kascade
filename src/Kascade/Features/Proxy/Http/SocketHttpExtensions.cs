@@ -59,12 +59,12 @@ public static class SocketHttpExtensions
 			return Array.Empty<byte>(); // Returns Empty reply from server
 		}
 		
-		logChannel.LogInfo($"Connecting to destination finished after {(new DateTime() - now).Milliseconds}ms");
+		// logChannel.LogInfo($"Connecting to destination finished after {(new DateTime() - now).Milliseconds}ms");
 		
 		// Send the HTTP request to the server
 		now = new DateTime();
 		socket.Send(requestBytes);
-		logChannel.LogInfo($"Request sent after {(new DateTime() - now).Milliseconds}ms");
+		// logChannel.LogInfo($"Request sent after {(new DateTime() - now).Milliseconds}ms");
 		
 		byte lastByte = (byte)'\n';
 		int bodyLength = -1;
@@ -137,7 +137,7 @@ public static class SocketHttpExtensions
 			}
 			// logger.LogInfo($"Last byte = {lastByte}");
 		}
-		logChannel.LogInfo($"Response read after {(new DateTime() - now).Milliseconds}ms. Closing connection");
+		// logChannel.LogInfo($"Response read after {(new DateTime() - now).Milliseconds}ms. Closing connection");
 		socket.Close();
 		return responseBytes.ToArray();
 	}
