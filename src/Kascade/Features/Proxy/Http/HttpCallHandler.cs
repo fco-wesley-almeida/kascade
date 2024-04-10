@@ -13,7 +13,7 @@ public class HttpCallHandler: ITcpConnectionHandler
 	private readonly ILogChannel _logChannel;
 	
 	private readonly Queue<IAsyncResult> _messagesQueue = new();
-	private Thread? _queueHandlerThread = null!;
+	private Thread? _queueHandlerThread;
 
 	/// <summary>
 	/// Initializes a new instance of the HttpCallHandler class with the specified URI.
@@ -51,23 +51,23 @@ public class HttpCallHandler: ITcpConnectionHandler
 
 	private void HandleQueueMessages()
 	{
-		int request = 0;
+		int countRequests = 0;
 		while (true)
 		{
-			IAsyncResult? asyncResult;
-			bool dequeueWorked;
+			IAsyncResult? request;
+			bool hasPendingRequests;
 			
 			lock (_messagesQueue)
 			{
-				dequeueWorked = _messagesQueue.TryDequeue(out asyncResult);	
+				hasPendingRequests = _messagesQueue.TryDequeue(out request);	
 			}
 			
-			if (dequeueWorked)
+			if (hasPendingRequests)
 			{
-				_logChannel.LogInfo($"\n\n[HttpCallHandler] {++request} Dequeue worked!");
-				var listener = (Socket?) asyncResult!.AsyncState!;
+				_logChannel.LogInfo($"\n\n[HttpCallHandler] {++countRequests} Dequeue worked!");
+				var listener = (Socket?) request!.AsyncState!;
 				listener.BeginAccept(AcceptCallback, listener);
-				var client = listener.EndAccept(asyncResult);
+				var client = listener.EndAccept(request);
 				_logChannel.LogInfo($"Client connected: {client.RemoteEndPoint!}");
 				
 				// Get HTTP request headers
