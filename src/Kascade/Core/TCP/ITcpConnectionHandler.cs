@@ -1,7 +1,9 @@
+using System.Net.Sockets;
+
 namespace Kascade.Core.TCP;
 
 public interface ITcpConnectionHandler
 {
-	public void AcceptCallback(IAsyncResult asyncResult);
+	public bool TryHandle(Socket client, out byte[]? bytesResponse);
 	public TcpProtocol TcpProtocol {get;}
 }
