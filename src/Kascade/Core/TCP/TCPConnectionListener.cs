@@ -51,14 +51,11 @@ public class TcpConnectionListener
 	/// <param name="asyncResult">The result of the asynchronous operation.</param>
 	private void AcceptCallback(IAsyncResult asyncResult)
 	{
-		// lock (_threadFlag)
-		// {
-			if (_mainThread is null)
-			{
-				_mainThread = new(HandleQueueMessages);
-				_mainThread.Start();
-			}
-		// }
+		if (_mainThread is null)
+		{
+			_mainThread = new(HandleQueueMessages);
+			_mainThread.Start();
+		}
 
 		lock (_requestsQueue)
 		{
@@ -69,11 +66,11 @@ public class TcpConnectionListener
 	private void HandleQueueMessages()
 	{
 		int countRequests = 0;
-		bool hasPendingRequests;
 		do
 		{
 			IAsyncResult? request;
 
+			bool hasPendingRequests;
 			lock (_requestsQueue)
 			{
 				hasPendingRequests = _requestsQueue.TryDequeue(out request);
@@ -96,11 +93,6 @@ public class TcpConnectionListener
 				}
 			}
 		} while (true);
-
-		// lock (_threadFlag)
-		// {
-		// 	_mainThread = null;
-		// } 
 	}
 
 	/// <summary>
